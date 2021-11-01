@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>よくある見出しを自動生成</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+    <!-- header -->
+    <header>
+      <div class="wrapper">
+        <div class="header-inner">
+          <h1>よくある見出しを自動生成</h1>
+          <div class="header-input">
+            <input class="input" id="js-input-en" type="text" value="About Us">
+            <input class="input" id="js-input-ja" type="text" value="会社概要">
+            <button class="reload" id="js-reload">更新</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- //header -->
+
+    <!-- main -->
+    <main>
+      <div class="wrapper">
+        <ul id="js-list"></ul>
+      </div>
+    </main>
+    <!-- //main -->
+
+    <!-- footer -->
+    <footer>
+      <div class="wrapper">
+        <p><small>&copy; 2021 Daisuke Sumida</small></p>
+      </div>
+    </footer>
+    <!-- //footer -->
+
+    <!-- script -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./js/script.js"></script>
+    <!-- //script -->
+  </body>
+</html>
