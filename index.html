@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/muuri.css">
   </head>
   <body>
     <!-- header -->
@@ -17,22 +18,30 @@
         <div class="header-inner">
           <h1>よくある見出しを自動生成</h1>
           <div class="header-input">
-            <input class="input" id="js-input-en" type="text" value="About Us">
-            <input class="input" id="js-input-ja" type="text" value="会社概要">
-            <button class="reload" id="js-reload">更新</button>
+            <label class="radio">
+              <input type="radio" name="fav" value="" checked>
+              <span>すべて</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="fav" value="fav">
+              <span>お気に入り</span>
+            </label>
           </div>
         </div>
       </div>
     </header>
     <!-- //header -->
 
-    <!-- main -->
     <main>
       <div class="wrapper">
-        <ul id="js-list"></ul>
+        <div class="grid muuri" id="js-grid"></div>
+      </div>
+      <div class="modal-wrapper" id="js-modal-wrapper">
+        <div class="modal" id="js-modal"></div>
       </div>
     </main>
-    <!-- //main -->
+
+
 
     <!-- footer -->
     <footer>
@@ -44,6 +53,8 @@
 
     <!-- script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/muuri@0.9.5/dist/muuri.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web-animations-js@2.3.2/web-animations.min.js"></script>
     <script src="./js/script.js"></script>
     <!-- //script -->
   </body>

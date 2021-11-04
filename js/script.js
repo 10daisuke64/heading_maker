@@ -1,9 +1,6 @@
 /* ---------------------------
   定義
 ----------------------------- */
-const $input_en = $("#js-input-en");
-const $input_ja = $("#js-input-ja");
-
 // 乱数発生
 function random_number(min,max) {
   var random = Math.floor( Math.random() * (max - min + 1) ) + min;
@@ -57,7 +54,7 @@ $.each(array_ja, function(index,val){
   loop_google_font_ja += "family=" + val.name + ":wght@" + val.weight.join(";") + "&";
 })
 // linkタグの形へ連結
-const link_google_font = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?' + loop_google_font_en + loop_google_font_ja + 'display=swap">'
+const link_google_font = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?' + loop_google_font_en + loop_google_font_ja + 'display=swap">';
 $("head").append(link_google_font);
 
 
@@ -68,7 +65,8 @@ $("head").append(link_google_font);
 const array_en_length = array_en.length - 1;
 const array_ja_length = array_ja.length - 1;
 
-for (var i = 0; i < 60; i++) {
+// カードを表示
+for (var i = 0; i < 90; i++) {
   var random_number_en = random_number(0, array_en_length);
   var random_number_ja = random_number(0, array_ja_length);
 
@@ -88,34 +86,52 @@ for (var i = 0; i < 60; i++) {
   var array_weight_ja_length = array_ja[random_number_ja]["weight"].length - 1;
   var random_weight_ja = "font-weight:" + array_ja[random_number_ja]["weight"][random_number(0, array_weight_ja_length)] + ";";
 
+  var random_code =
+  '<div class="item" data-fav="all">' +
+  '<div class="item-content">' +
+  '<div class="display">' +
+  '<input class="en" value="About Us" style="' + random_font_en +  random_weight_en + '">' +
+  '<input class="ja" value="会社概要" style="' + random_font_ja +  random_weight_ja + '">' +
+  '<button class="code"></button>' +
+  '<button class="favorite"></button>' +
+  '</div>' +
+  '</div>' +
+  '</div>';
 
-  // 吐き出すコードの連結
-  var random_en = '<li><div class="display"><h2 class="en" style="' + random_font_en +  random_weight_en + '"></h2><p class="ja" style="' + random_font_ja +  random_weight_ja + '"></p></div></li>';
-
-  $("#js-list").append(random_en);
+  $("#js-grid").append(random_code);
 }
 
+/* ---------------------------
+  Muuri
+----------------------------- */
+// fire
+var grid = new Muuri(".grid");
 
+// filter
+var filterFieldValue = $('input:radio[name="fav"]:checked').val();
+function filter() {
+  filterFieldValue = $('input:radio[name="fav"]:checked').val();
+  grid.filter(function (item) {
+    var element = item.getElement(),
+    isFilterMatch = !filterFieldValue ? true : (element.getAttribute("data-fav") || '').indexOf(filterFieldValue) != -1;
+    return isFilterMatch;
+  });
+}
+$('input:radio[name="fav"]').change(function() {
+  filter();
+})
 
 /* ---------------------------
   表示テキスト
 ----------------------------- */
-// 表示テキストの初期値
-$(function(){
-  var en_val = $input_en.val();
-  $(".en").text(en_val);
-  var ja_val = $input_ja.val();
-  $(".ja").text(ja_val);
-})
-
 // 表示テキストの変更
-$input_en.keyup(function(){
+$(".en").keyup(function(){
   var en_val = $(this).val();
-  $(".en").text(en_val);
+  $(".en").val(en_val);
 })
-$input_ja.keyup(function(){
+$(".ja").keyup(function(){
   var ja_val = $(this).val();
-  $(".ja").text(ja_val);
+  $(".ja").val(ja_val);
 })
 
 /* ---------------------------
@@ -123,39 +139,65 @@ $input_ja.keyup(function(){
 ----------------------------- */
 // font-familyの表示の仕込み
 $(".display").each(function(){
+
   var en_font = $(this).find(".en").css("font-family");
+  var en_font_nospace = en_font.replaceAll(" ", "+").replaceAll('"', '');
   var en_weight = $(this).find(".en").css("font-weight");
+
   var ja_font = $(this).find(".ja").css("font-family");
+  var ja_font_nospace = ja_font.replaceAll(" ", "+").replaceAll('"', '');
   var ja_weight = $(this).find(".ja").css("font-weight");
 
   // CSSの記述
   var copy_css =
-  '.en {\n  font-family: ' + en_font + ';\n  font-weight: ' + en_weight + ';\n}\n' + '.ja {\n  font-family: ' + ja_font + ';\n  font-weight: ' + en_weight + ';\n}\n';
+  '.en {\n  font-family: ' + en_font + ',sans-serif;\n  font-weight: ' + en_weight + ';\n}\n' + '.ja {\n  font-family: ' + ja_font + ',sans-serif;\n  font-weight: ' + en_weight + ';\n}\n';
+
+  // linkタグの記述
+  var copy_link =
+  '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+  '<link href="https://fonts.googleapis.com/css2?family=' + en_font_nospace + ':wght@' + en_weight + '&family=' + ja_font_nospace + ':wght@' + ja_weight + '&display=swap" rel="stylesheet">';
 
   // 挿入するテキストエリア
   var copy_css_textarea =
-  '<div class="copy"><div class="copy__inner"><textarea>' + copy_css + '</textarea><button>Copy!</button></div></div>';
+  '<div class="copy"><div class="copy__inner"><textarea>' + copy_link + '</textarea><button>Copy!</button></div><div class="copy__inner"><textarea>' + copy_css + '</textarea><button>Copy!</button></div></div>';
 
   $(this).after(copy_css_textarea);
 })
 
-// font-familyの表示のスライドトグル
-$(".display").on("click", function(){
-  $(this).next(".copy").slideToggle(200);
+/* ---------------------------
+  modal
+----------------------------- */
+$(".code").on("click", function(){
+  $(this).parent(".display").next(".copy").clone(true).appendTo("#js-modal");
+  $("#js-modal-wrapper").fadeIn(400);
 })
-
+$(document).click(function(event){
+  var target = $(event.target);
+  if(target.hasClass('modal')) {
+    // closeと内容のリセット
+    target.empty().parent(".modal-wrapper").fadeOut(400);
+  }
+});
 
 /* ---------------------------
-  CSSのコピー
+  お気に入り登録
+----------------------------- */
+$(".favorite").on("click", function(){
+  $(this).toggleClass("is_active");
+  var value_fav = $(this).parents(".item").attr("data-fav");
+  if( value_fav.indexOf("fav") > -1 ) {
+    $(this).parents(".item").attr("data-fav","all");
+  } else {
+    $(this).parents(".item").attr("data-fav","all fav");
+  }
+})
+
+/* ---------------------------
+  コードのコピー
 ----------------------------- */
 $(".copy button").on("click", function(){
+  console.log("OK");
   $(this).siblings("textarea").select();
 	document.execCommand('copy');
-})
-
-/* ---------------------------
-  リロード
------------------------------ */
-$("#js-reload").on("click", function(){
-  location.reload();
 })
